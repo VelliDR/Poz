@@ -11,8 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./src/style.css" />
     
-    <!-- MediaPipe Vision (AI Hand Tracking) -->
-      </head>
+    <!-- MediaPipe Vision (AI Hand Tracking) -->  </head>
   <body>
     <div id="app">
       
@@ -45,14 +44,14 @@
         <div id="gridOverlay" class="grid-overlay grid-3x3"></div>
         
         <!-- Yapay Zeka Geri Sayım Sayacı -->
-        <div id="aiCountdown" class="hidden">3</div>
+        <div id="aiCountdown">3</div>
+        
         <!-- Yükleme (Loading) Ekranı -->
         <div id="loadingOverlay" class="hidden" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center;">
           <div class="m3-spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--ios-amber); border-radius: 50%; animation: spin 1s linear infinite;"></div>
           <p id="loadingText" style="margin-top: 15px; font-weight: bold; color: var(--ios-amber);">İşleniyor...</p>
         </div>
       </main>
-
       <!-- 3. ALT SİYAH BAR & KONTROLLER -->
       <footer class="bottom-bar">
         

@@ -165,7 +165,7 @@ body, html {
 #aiCountdown {
   position: absolute;
   inset: 0;
-  display: none; /* Varsayılan olarak tamamen GİZLİ */
+  display: none !important; /* Normalde kesinlikle gizli */
   align-items: center;
   justify-content: center;
   font-size: 140px;
@@ -176,9 +176,9 @@ body, html {
   pointer-events: none;
 }
 
-/* Sadece tetiklendiğinde bu sınıf eklenecek ve görünür olacak */
+/* AI el algılayıp tetiklendiğinde ekrana fırlayacak */
 #aiCountdown.active {
-  display: flex; 
+  display: flex !important; 
 }
 
 .countdown-anim {
