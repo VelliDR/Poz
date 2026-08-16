@@ -1,5 +1,4 @@
 // src/core/imageLoader.js
-import heic2any from 'heic2any'; // Artık hata vermeyecek çünkü Vite çözecek
 
 export async function processImageFile(file, onProgress) {
   if (!file) throw new Error('Dosya seçilmedi.');
@@ -12,10 +11,15 @@ export async function processImageFile(file, onProgress) {
   if (isHeic) {
     if (onProgress) onProgress("HEIC dönüştürülüyor...");
     try {
-      const result = await heic2any({
+      // CDN üzerinden gelen global heic2any fonksiyonunu kullanıyoruz
+      if (!window.heic2any) {
+        throw new Error("HEIC dönüştürücü yüklenemedi.");
+      }
+      
+      const result = await window.heic2any({
         blob: file,
         toType: 'image/jpeg',
-        quality: 0.9 // Kaliteyi koru ama çok ağırlaştırma
+        quality: 0.9
       });
       targetBlob = Array.isArray(result) ? result[0] : result;
     } catch (err) {
