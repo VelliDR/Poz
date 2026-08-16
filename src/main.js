@@ -205,3 +205,36 @@ btnAiToggle.addEventListener('click', () => {
     if (statusText) statusText.innerHTML = '<span class="status-dot" style="background-color: var(--ios-amber);"></span> FAZ 1 : HİZALAMA';
   }
 });
+// =========================================================
+// PWA KURULUM (INSTALL) TETİKLEYİCİSİ
+// =========================================================
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Tarayıcının varsayılan otomatik mini-bilgi çubuğunu engelle
+  e.preventDefault();
+  // Olayı daha sonra tetiklemek üzere sakla
+  deferredPrompt = e;
+  
+  console.log('PWA kurulum etkinleştirildi ve yakalandı!');
+  
+  // İstersen burada ekrandaki gizli bir "Uygulamayı Yükle" butonunu görünür yapabilirsin
+  const installBtn = document.getElementById('btnInstallApp');
+  if (installBtn) {
+    installBtn.classList.remove('hidden');
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`Kullanıcı seçim sonucu: ${outcome}`);
+        deferredPrompt = null;
+        installBtn.classList.add('hidden');
+      }
+    });
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('Poz başarıyla ana ekrana kuruldu!');
+  deferredPrompt = null;
+});
