@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+<link rel="icon" type="image/x-icon" href="/Poz/favicon.ico" />    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Poz | Görsel Hizalama Motoru</title>
+    <meta name="theme-color" content="#000000" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+    <!-- HEIC to JPEG Converter (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js" crossorigin="anonymous"></script>
+    
+    <!-- MediaPipe Vision (AI Hand Tracking) --> 
+       <script type="module" crossorigin src="/Poz/assets/index-BlBSjC8e.js"></script>
+       <link rel="stylesheet" crossorigin href="/Poz/assets/index-CSj0H1e_.css">
+     <link rel="manifest" href="/Poz/manifest.webmanifest"><script id="vite-plugin-pwa:inline-sw">if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/Poz/sw.js', { scope: '/Poz/' })})}</script></head>
+  <body>
+    <div id="app">
+      
+      <!-- 1. ÜST SİYAH BAR -->
+      <header class="top-bar">
+        <!-- IZGARA BUTONU (Silinen buton buydu) -->
+        <button id="btnGrid" class="icon-btn" title="Izgarayı Değiştir">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+        </button>
+        
+        <div class="top-status"><span class="status-dot" style="background-color: var(--ios-amber);"></span> FAZ 1 : HİZALAMA</div>
+        
+        <!-- YAPAY ZEKA BUTONU -->
+        <button id="btnAiToggle" class="icon-btn" title="Yapay Zeka (Otonom Çekim)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 11V6a2 2 0 0 0-4 0v4"></path>
+            <path d="M14 10V5a2 2 0 0 0-4 0v5"></path>
+            <path d="M10 10.5V4a2 2 0 0 0-4 0v7"></path>
+            <path d="M6 14v-2a2 2 0 0 0-4 0v7a8 8 0 0 0 8 8h2a8 8 0 0 0 8-8v-7a2 2 0 0 0-4 0v3"></path>
+          </svg>
+        </button>
+      </header>
+
+      <!-- 2. VİZÖR (KAMERA & HAYALET KATMAN) -->
+      <main class="viewfinder">
+        <video id="cameraFeed" autoplay playsinline muted></video>
+        <img id="ghostImage" class="hidden" alt="Referans Görsel" />
+        
+        <!-- Dinamik Izgara Katmanı -->
+        <div id="gridOverlay" class="grid-overlay grid-3x3"></div>
+        
+        <!-- Yapay Zeka Geri Sayım Sayacı -->
+        <div id="aiCountdown">3</div>
+        
+        <!-- Yükleme (Loading) Ekranı -->
+        <div id="loadingOverlay" class="hidden" style="position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <div class="m3-spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--ios-amber); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <p id="loadingText" style="margin-top: 15px; font-weight: bold; color: var(--ios-amber);">İşleniyor...</p>
+        </div>
+      </main>
+      <!-- 3. ALT SİYAH BAR & KONTROLLER -->
+      <footer class="bottom-bar">
+        
+        <!-- HARMANLAMA MODLARI (BLEND MODES) -->
+        <div class="blend-modes">
+          <button class="blend-btn active" data-mode="normal">Normal</button>
+          <button class="blend-btn" data-mode="multiply">Koyu (Çoğalt)</button>
+          <button class="blend-btn" data-mode="screen">Açık (Ekran)</button>
+        </div>
+
+        <!-- Şeffaflık Kadranı (Yatay Silindir) -->
+        <div class="dial-container">
+          <div class="dial-header">
+            <span>HAYALET ŞEFFAFLIĞI</span>
+            <span class="dial-value" id="opacityDisplay">%50</span>
+          </div>
+          <div class="dial-track" id="opacityDial">
+            <div class="dial-center-mark"></div>
+          </div>
+        </div>
+
+        <!-- Kamera Kontrolleri -->
+        <div class="camera-controls">
+          <label class="icon-btn upload-btn">
+            <input type="file" id="imageInput" accept="image/*" />
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </label>
+          
+          <button id="btnShutter" class="shutter-btn"></button>
+          
+          <button id="btnFlip" class="icon-btn">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M3 22v-6h6"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+          </button>
+        </div>
+      </footer>
+    </div>
+    
+  </body>
+</html>
