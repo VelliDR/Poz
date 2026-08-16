@@ -1,20 +1,4 @@
 // src/main.js
-
-// =========================================================
-// PWA MOTORU: Çevrimdışı (Offline) Çalışma Desteği
-// =========================================================
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
-      .then((reg) => {
-        console.log('Service Worker başarıyla kaydedildi:', reg.scope);
-      })
-      .catch((err) => {
-        console.log('Service Worker kayıt hatası:', err);
-      });
-  });
-}
-
 // =========================================================
 // MODÜL İÇE AKTARIMLARI
 // =========================================================

@@ -1,6 +1,5 @@
 // src/core/aiTrigger.js
 
-// ÇÖZÜM: NPM paketini aramak yerine doğrudan tarayıcı dostu CDN ESM adresini kullanıyoruz
 import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm";
 
 let handLandmarker = null;
@@ -17,9 +16,14 @@ export async function initAI() {
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
     );
     
+    // Güvenli BASE_URL kontrolü (Undefined hatasını engeller)
+    const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) 
+      ? import.meta.env.BASE_URL 
+      : './';
+
     handLandmarker = await HandLandmarker.createFromOptions(vision, {
       baseOptions: {
-        modelAssetPath: import.meta.env.BASE_URL + "models/hand_landmarker.task",
+        modelAssetPath: baseUrl + "models/hand_landmarker.task",
         delegate: "GPU"
       },
       runningMode: "VIDEO",
