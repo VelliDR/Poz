@@ -16,14 +16,11 @@ export async function initAI() {
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
     );
     
-    // Güvenli BASE_URL kontrolü (Undefined hatasını engeller)
-    const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) 
-      ? import.meta.env.BASE_URL 
-      : './';
-
     handLandmarker = await HandLandmarker.createFromOptions(vision, {
       baseOptions: {
-        modelAssetPath: baseUrl + "models/hand_landmarker.task",
+        // ÇÖZÜM: Dosyayı localde aramak yerine Google'ın resmi CDN adresinden çekiyoruz. 
+        // Bu sayede 404 hatası ve path karmaşası tamamen tarih olur.
+        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
         delegate: "GPU"
       },
       runningMode: "VIDEO",
