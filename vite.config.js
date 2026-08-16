@@ -3,8 +3,10 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ command }) => {
+const basePath = command === 'build' ? '/Poz/' : '/';
+
   return {
-    base: command === 'build' ? '/Poz/' : '/', 
+    base: basePath, 
     
     plugins: [
       VitePWA({
@@ -27,8 +29,8 @@ export default defineConfig(({ command }) => {
           orientation: 'portrait',
           
           // --- MOBİL İÇİN KRİTİK İKİ SATIR ---
-          start_url: './',
-          scope: './',
+          start_url: basePath,
+          scope: basePath,
           // ----------------------------------
 
           icons: [
