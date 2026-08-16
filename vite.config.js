@@ -4,7 +4,6 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ command }) => {
   return {
-    // ÇÖZÜM 1: Sadece GitHub'a build alırken '/Poz/' yap, lokalde '/' kal.
     base: command === 'build' ? '/Poz/' : '/', 
     
     plugins: [
@@ -26,9 +25,14 @@ export default defineConfig(({ command }) => {
           background_color: '#000000',
           display: 'standalone',
           orientation: 'portrait',
+          
+          // --- MOBİL İÇİN KRİTİK İKİ SATIR ---
+          start_url: './',
+          scope: './',
+          // ----------------------------------
+
           icons: [
             {
-              // ÇÖZÜM 2: Başındaki '/' işaretlerini sildik
               src: 'icon-192.png',
               sizes: '192x192',
               type: 'image/png'
