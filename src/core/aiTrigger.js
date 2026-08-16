@@ -1,5 +1,7 @@
 // src/core/aiTrigger.js
-import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
+
+// ÇÖZÜM: NPM paketini aramak yerine doğrudan tarayıcı dostu CDN ESM adresini kullanıyoruz
+import { HandLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm";
 
 let handLandmarker = null;
 let isAiEnabled = false;
@@ -12,7 +14,7 @@ export async function initAI() {
 
   try {
     const vision = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
     );
     
     handLandmarker = await HandLandmarker.createFromOptions(vision, {
@@ -66,12 +68,9 @@ export function startAILoop(videoEl, onTrigger) {
         hasOpenPalm = isOpenPalm(results.landmarks[0]);
       }
 
-      // Sadece açık avuç gördüğünde ve şu an sayılmıyorsa başlat
       if (hasOpenPalm && !isCountingDown) {
         startCountdown(onTrigger);
       }
-      // DİKKAT: Artık avucu çektiğinde else ile sayacı iptal ETMİYORUZ. 
-      // Sayaç bir kez ateşlendiğinde bağımsız olarak 3-2-1 biter ve fotoğrafı çeker.
     }
     animationFrameId = requestAnimationFrame(detectionLoop);
   }
@@ -105,9 +104,8 @@ function startCountdown(onTrigger) {
       currentTimer = null;
       
       countEl.classList.remove('active');
-      onTrigger(); // Fotoğrafı çek!
+      onTrigger(); 
       
-      // Çekimden sonra tekrar yeni bir avuç algılamadan önce 2 saniye bekle
       setTimeout(() => { 
         isCountingDown = false; 
       }, 2000);
